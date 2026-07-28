@@ -1,0 +1,44 @@
+package com.project.autoserve.entity;
+
+import java.time.LocalDate;
+
+import com.project.autoserve.enums.AppointmentStatus;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+
+@Entity
+@Table(name = "appointments")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Appointment extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long appointmentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mechanic_id")
+    private Mechanic mechanic;
+
+    @FutureOrPresent(message = "Appointment date cannot be in the past")
+    @Column(nullable = false)
+    private LocalDate appointmentDate;
+
+    @NotBlank(message = "Problem description is required")
+    @Column(nullable = false, length = 500)
+    private String problemDescription;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AppointmentStatus status;
+}
