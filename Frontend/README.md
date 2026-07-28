@@ -1,37 +1,43 @@
-# AutoServe-VSM
+# Frontend
 
-A full-stack Vehicle Service Management System built using Spring Boot and React.
+React frontend for AutoServe-VSM.
 
-## Tech Stack
+## Technologies
 
-### Backend
-- Java 21
-- Spring Boot
-- Spring Security
-- Spring Data JPA (Hibernate)
-- JWT Authentication
-- MySQL
-- Maven
-
-### Frontend
 - React.js
 - React Router
 - Axios
 - Bootstrap
+- CSS
 
-## Features
+## Install
 
-- Customer Registration & Login
-- Vehicle Management
-- Book Service Appointments
-- Appointment Status Tracking
-- Job Card Generation
-- Invoice Management
-- Payment Management
-- Role-Based Authentication (Admin, Mechanic, Customer)
+```bash
+npm install
+```
 
-## Project Structure
+## Run
 
-AutoServe-VSM/
-├── Backend/
-└── Frontend/
+```bash
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Folder Structure
+
+```text
+src/
+│
+├── api
+├── assets
+├── components
+├── pages
+├── router
+├── services
+└── main.jsx
+```
