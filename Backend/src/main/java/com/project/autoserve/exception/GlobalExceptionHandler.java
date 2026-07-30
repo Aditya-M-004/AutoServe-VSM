@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.project.autoserve.util.ApiResponse;
+import org.springframework.security.access.AccessDeniedException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -66,6 +67,18 @@ public class GlobalExceptionHandler {
                         .success(false)
                         .message("Validation Failed")
                         .data(errors)
+                        .build());
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAccessDenied(
+            AccessDeniedException ex) {
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.builder()
+                        .success(false)
+                        .message("Access denied.")
+                        .data(null)
                         .build());
     }
 

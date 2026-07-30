@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.project.autoserve.entity.User;
+import com.project.autoserve.enums.UserStatus;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -54,6 +55,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getStatus().name().equals("ACTIVE");
+        return user.getStatus() == UserStatus.ACTIVE;
     }
 }

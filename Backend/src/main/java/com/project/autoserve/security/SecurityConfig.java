@@ -18,35 +18,56 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            JwtAuthenticationEntryPoint authenticationEntryPoint) {
+            JwtAuthenticationEntryPoint authenticationEntryPoint,
+            JwtAccessDeniedHandler accessDeniedHandler) {
 
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-        		.cors(cors -> {})
+                .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(
-                                "/api/auth/**"
-                        ).permitAll()
+                        // Public APIs
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
 
-                        .anyRequest().authenticated()
+                        // Admin APIs
+                        .requestMatchers("/api/mechanics/**")
+                        .hasRole("ADMIN")
+
+                        // Customer APIs
+                        .requestMatchers("/api/vehicles/**")
+                        .hasRole("CUSTOMER")
+
+                        .requestMatchers("/api/appointments/**")
+                        .hasRole("CUSTOMER")
+
+                        // Mechanic APIs
+                        .requestMatchers("/api/jobcards/**")
+                        .hasRole("MECHANIC")
+
+                        // Everything else
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .addFilterBefore(
