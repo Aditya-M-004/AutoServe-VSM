@@ -9,6 +9,7 @@ import com.project.autoserve.entity.JobCard;
 
 public interface JobCardRepository extends JpaRepository<JobCard, Long> {
 
-    Optional<JobCard> findByAppointment(Appointment appointment);
+    boolean existsByAppointment(Appointment appointment);
 
+    Optional<JobCard> findByAppointment(Appointment appointment);
 }

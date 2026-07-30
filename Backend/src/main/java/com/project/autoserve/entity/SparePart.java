@@ -1,13 +1,23 @@
 package com.project.autoserve.entity;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "spare_parts")
@@ -22,7 +32,7 @@ public class SparePart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long partId;
 
-    @NotBlank
+    @NotBlank(message = "Part name is required")
     @Column(nullable = false)
     private String partName;
 
@@ -30,7 +40,8 @@ public class SparePart {
     @Column(nullable = false)
     private BigDecimal unitPrice;
 
-    @ManyToMany(mappedBy = "spareParts")
-    private Set<JobCard> jobCards = new HashSet<>();
+    @OneToMany(mappedBy = "sparePart")
+    @Builder.Default
+    private List<JobCardPart> jobCardParts = new ArrayList<>();
 
 }

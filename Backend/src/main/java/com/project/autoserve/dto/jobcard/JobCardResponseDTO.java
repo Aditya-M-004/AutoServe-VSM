@@ -5,16 +5,26 @@ import java.util.Set;
 
 import com.project.autoserve.enums.JobStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class JobCardResponseDTO {
 
     private Long jobId;
 
+    private Long appointmentId;
+
     private String inspectionNotes;
+
+    private String mechanicRemarks;
 
     private BigDecimal estimatedCost;
 

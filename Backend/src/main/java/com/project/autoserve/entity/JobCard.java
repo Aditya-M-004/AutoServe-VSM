@@ -1,14 +1,30 @@
 package com.project.autoserve.entity;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.project.autoserve.enums.JobStatus;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "job_cards")
@@ -30,6 +46,9 @@ public class JobCard extends BaseEntity {
     @Column(length = 500)
     private String inspectionNotes;
 
+    @Column(length = 500)
+    private String mechanicRemarks;
+
     @DecimalMin(value = "0.0")
     @Column(nullable = false)
     private BigDecimal estimatedCost;
@@ -38,18 +57,19 @@ public class JobCard extends BaseEntity {
     private String workDone;
 
     @DecimalMin(value = "0.0")
+    @Column(nullable = false)
     private BigDecimal laborCost;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private JobStatus status;
 
-    @ManyToMany
-    @JoinTable(
-            name = "jobcard_parts",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "part_id")
+    @OneToMany(
+            mappedBy = "jobCard",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<SparePart> spareParts = new HashSet<>();
+    @Builder.Default
+    private List<JobCardPart> jobCardParts = new ArrayList<>();
 
 }

@@ -16,6 +16,8 @@ import com.project.autoserve.entity.Vehicle;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.project.autoserve.dto.jobcardpart.JobCardPartResponseDTO;
+import com.project.autoserve.entity.JobCardPart;
 
 public class MapperUtil {
 
@@ -63,14 +65,16 @@ public class MapperUtil {
 
     public static JobCardResponseDTO toJobCardResponse(JobCard jobCard) {
 
-        Set<String> spareParts = jobCard.getSpareParts()
+        Set<String> spareParts = jobCard.getJobCardParts()
                 .stream()
-                .map(SparePart::getPartName)
+                .map(jobCardPart -> jobCardPart.getSparePart().getPartName())
                 .collect(Collectors.toSet());
 
         return JobCardResponseDTO.builder()
                 .jobId(jobCard.getJobId())
+                .appointmentId(jobCard.getAppointment().getAppointmentId())
                 .inspectionNotes(jobCard.getInspectionNotes())
+                .mechanicRemarks(jobCard.getMechanicRemarks())
                 .estimatedCost(jobCard.getEstimatedCost())
                 .workDone(jobCard.getWorkDone())
                 .laborCost(jobCard.getLaborCost())
@@ -97,6 +101,19 @@ public class MapperUtil {
                 .amount(payment.getAmount())
                 .paymentStatus(payment.getPaymentStatus())
                 .transactionId(payment.getTransactionId())
+                .build();
+    }
+    
+    public static JobCardPartResponseDTO toJobCardPartResponse(JobCardPart jobCardPart) {
+
+        return JobCardPartResponseDTO.builder()
+                .jobCardPartId(jobCardPart.getJobCardPartId())
+                .jobId(jobCardPart.getJobCard().getJobId())
+                .partId(jobCardPart.getSparePart().getPartId())
+                .partName(jobCardPart.getSparePart().getPartName())
+                .quantity(jobCardPart.getQuantity())
+                .unitPrice(jobCardPart.getUnitPrice())
+                .subtotal(jobCardPart.getSubtotal())
                 .build();
     }
 
