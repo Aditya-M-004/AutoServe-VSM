@@ -2,7 +2,7 @@ package com.project.autoserve.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+import com.project.autoserve.enums.InvoiceStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.*;
@@ -25,16 +25,33 @@ public class Invoice extends BaseEntity {
     private JobCard jobCard;
 
     @DecimalMin(value = "0.0")
-    @Column(nullable = false)
-    private BigDecimal finalCost;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal partsTotal;
 
     @DecimalMin(value = "0.0")
-    private BigDecimal gst;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal laborCost;
 
     @DecimalMin(value = "0.0")
-    @Column(nullable = false)
-    private BigDecimal totalCost;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal subTotal;
+
+    @DecimalMin(value = "0.0")
+    @Column(nullable = false, precision = 5, scale = 2)
+    private BigDecimal gstPercentage;
+
+    @DecimalMin(value = "0.0")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal gstAmount;
+
+    @DecimalMin(value = "0.0")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalAmount;
 
     @Column(nullable = false)
     private LocalDate invoiceDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InvoiceStatus status;
 }

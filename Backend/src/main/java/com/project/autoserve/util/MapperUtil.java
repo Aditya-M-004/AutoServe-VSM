@@ -87,13 +87,18 @@ public class MapperUtil {
 
         return InvoiceResponseDTO.builder()
                 .invoiceId(invoice.getInvoiceId())
-                .finalCost(invoice.getFinalCost())
-                .gst(invoice.getGst())
-                .totalCost(invoice.getTotalCost())
+                .jobId(invoice.getJobCard().getJobId())
+                .partsTotal(invoice.getPartsTotal())
+                .laborCost(invoice.getLaborCost())
+                .subTotal(invoice.getSubTotal())
+                .gstPercentage(invoice.getGstPercentage())
+                .gstAmount(invoice.getGstAmount())
+                .totalAmount(invoice.getTotalAmount())
                 .invoiceDate(invoice.getInvoiceDate())
+                .status(invoice.getStatus())
                 .build();
     }
-
+    
     public static PaymentResponseDTO toPaymentResponse(Payment payment) {
 
         return PaymentResponseDTO.builder()

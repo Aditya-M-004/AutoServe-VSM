@@ -118,6 +118,14 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.DELETE, "/api/jobcard-parts/**")
                         .hasRole("ADMIN")
+                        
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/invoices/generate/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/invoices/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
 
                         // ===========================
                         // Any other request

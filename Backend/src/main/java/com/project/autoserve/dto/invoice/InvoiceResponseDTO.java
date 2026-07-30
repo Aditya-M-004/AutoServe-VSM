@@ -3,20 +3,39 @@ package com.project.autoserve.dto.invoice;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import lombok.Builder;
-import lombok.Data;
+import com.project.autoserve.enums.InvoiceStatus;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class InvoiceResponseDTO {
 
     private Long invoiceId;
 
-    private BigDecimal finalCost;
+    private Long jobId;
 
-    private BigDecimal gst;
+    private BigDecimal partsTotal;
 
-    private BigDecimal totalCost;
+    private BigDecimal laborCost;
+
+    private BigDecimal subTotal;
+
+    private BigDecimal gstPercentage;
+
+    private BigDecimal gstAmount;
+
+    private BigDecimal totalAmount;
 
     private LocalDate invoiceDate;
+
+    private InvoiceStatus status;
+
 }
