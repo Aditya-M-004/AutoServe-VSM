@@ -1,5 +1,7 @@
 package com.project.autoserve.service.impl;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ import com.project.autoserve.repository.MechanicRepository;
 import com.project.autoserve.repository.UserRepository;
 import com.project.autoserve.service.MechanicService;
 import com.project.autoserve.util.MapperUtil;
+import com.project.autoserve.exception.ResourceNotFoundException;
+import com.project.autoserve.dto.mechanic.UpdateMechanicRequestDTO;
+
 
 @Service
 public class MechanicServiceImpl implements MechanicService {
@@ -60,6 +65,70 @@ public class MechanicServiceImpl implements MechanicService {
         mechanic = mechanicRepository.save(mechanic);
 
         return MapperUtil.toMechanicResponse(mechanic);
+    }
+
+    @Override
+    public List<MechanicResponseDTO> getAllMechanics() {
+
+        return mechanicRepository.findByUserStatus(UserStatus.ACTIVE)
+                .stream()
+                .map(MapperUtil::toMechanicResponse)
+                .toList();
+
+    }
+    
+    @Override
+    public MechanicResponseDTO getMechanicById(Long mechanicId) {
+
+        Mechanic mechanic = mechanicRepository.findById(mechanicId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mechanic not found with ID: " + mechanicId));
+
+        return MapperUtil.toMechanicResponse(mechanic);
+    }
+    
+    @Override
+    public MechanicResponseDTO updateMechanic(
+            Long mechanicId,
+            UpdateMechanicRequestDTO request) {
+
+        Mechanic mechanic = mechanicRepository.findById(mechanicId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mechanic not found with ID: " + mechanicId));
+
+        User user = mechanic.getUser();
+
+        // Update User details
+        user.setName(request.getName());
+        user.setPhone(request.getPhone());
+
+        userRepository.save(user);
+
+        // Update Mechanic details
+        mechanic.setSpecialization(request.getSpecialization());
+        mechanic.setExperience(request.getExperience());
+        mechanic.setAvailabilityStatus(request.getAvailabilityStatus());
+
+        mechanic = mechanicRepository.save(mechanic);
+
+        return MapperUtil.toMechanicResponse(mechanic);
+    }
+    
+    @Override
+    public void deactivateMechanic(Long mechanicId) {
+
+        Mechanic mechanic = mechanicRepository.findById(mechanicId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Mechanic not found with ID: " + mechanicId));
+
+        User user = mechanic.getUser();
+
+        user.setStatus(UserStatus.INACTIVE);
+
+        userRepository.save(user);
     }
 
 }
