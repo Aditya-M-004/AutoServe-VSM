@@ -26,6 +26,8 @@ public interface VehicleService {
      */
     List<VehicleResponseDTO> getMyVehicles(
             String userEmail);
+    
+    List<VehicleResponseDTO> getAllVehicles();
 
     /**
      * Get vehicle by id.

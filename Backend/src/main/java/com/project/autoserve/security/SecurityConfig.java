@@ -2,6 +2,7 @@ package com.project.autoserve.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -46,26 +47,81 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // ===========================
                         // Public APIs
+                        // ===========================
                         .requestMatchers("/api/auth/**")
                         .permitAll()
 
-                        // Admin APIs
+                        // ===========================
+                        // Mechanic Management
+                        // ===========================
                         .requestMatchers("/api/mechanics/**")
                         .hasRole("ADMIN")
 
-                        // Customer APIs
-                        .requestMatchers("/api/vehicles/**")
-                        .hasRole("CUSTOMER")
+                        // ===========================
+                        // Vehicle APIs
+                        // ===========================
+                        .requestMatchers(HttpMethod.GET, "/api/vehicles/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
 
-                        .requestMatchers("/api/appointments/**")
-                        .hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.POST, "/api/vehicles/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
 
-                        // Mechanic APIs
-                        .requestMatchers("/api/jobcards/**")
-                        .hasRole("MECHANIC")
+                        .requestMatchers(HttpMethod.PUT, "/api/vehicles/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
 
-                        // Everything else
+                        .requestMatchers(HttpMethod.DELETE, "/api/vehicles/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
+
+                        // ===========================
+                        // Appointment APIs
+                        // ===========================
+                        .requestMatchers(HttpMethod.GET, "/api/appointments/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.POST, "/api/appointments/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/appointments/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/appointments/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
+
+                        // ===========================
+                        // Job Card APIs
+                        // ===========================
+                        .requestMatchers(HttpMethod.GET, "/api/jobcards/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.POST, "/api/jobcards/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/jobcards/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/jobcards/**")
+                        .hasRole("ADMIN")
+
+                        // ===========================
+                        // Job Card Part APIs
+                        // ===========================
+                        .requestMatchers(HttpMethod.GET, "/api/jobcard-parts/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.POST, "/api/jobcard-parts/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/jobcard-parts/**")
+                        .hasAnyRole("ADMIN", "MECHANIC")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/jobcard-parts/**")
+                        .hasRole("ADMIN")
+
+                        // ===========================
+                        // Any other request
+                        // ===========================
                         .anyRequest()
                         .authenticated()
                 )

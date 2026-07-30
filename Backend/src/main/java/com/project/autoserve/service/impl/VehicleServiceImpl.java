@@ -81,5 +81,14 @@ public class VehicleServiceImpl implements VehicleService {
 
         return MapperUtil.toVehicleResponse(vehicle);
     }
+    
+    @Override
+    public List<VehicleResponseDTO> getAllVehicles() {
+
+        return vehicleRepository.findAll()
+                .stream()
+                .map(MapperUtil::toVehicleResponse)
+                .toList();
+    }
 
 }

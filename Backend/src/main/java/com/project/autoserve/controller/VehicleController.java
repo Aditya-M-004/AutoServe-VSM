@@ -71,5 +71,19 @@ public class VehicleController {
                         .data(vehicle)
                         .build());
     }
+    
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<VehicleResponseDTO>>> getAllVehicles() {
+
+        List<VehicleResponseDTO> vehicles = vehicleService.getAllVehicles();
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<VehicleResponseDTO>>builder()
+                        .success(true)
+                        .message("Vehicles fetched successfully.")
+                        .data(vehicles)
+                        .build()
+        );
+    }
 
 }
