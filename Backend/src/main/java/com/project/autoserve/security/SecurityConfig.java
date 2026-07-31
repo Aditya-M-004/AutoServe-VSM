@@ -119,7 +119,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/jobcard-parts/**")
                         .hasRole("ADMIN")                        
                         
-                        ///JOBCARDPART API
+                        //JOBCARDPART API
                         
                         .requestMatchers(HttpMethod.POST,
                                 "/api/invoices/generate/**")
@@ -129,7 +129,7 @@ public class SecurityConfig {
                                 "/api/invoices/**")
                         .hasAnyRole("ADMIN", "MECHANIC")
                                                 
-                        ///PAYMENT APIS
+                        //PAYMENT APIS
                         
                         .requestMatchers(HttpMethod.POST,
                                 "/api/payments")
@@ -142,6 +142,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/payments/**")
                         .hasAnyRole("ADMIN", "CUSTOMER")
+                        
+                        //SERVICE HISTORY APIS
+                        
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/service-history")
+                        .hasRole("CUSTOMER")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/service-history/all")
+                        .hasRole("ADMIN")
 
                         // ===========================
                         // Any other request

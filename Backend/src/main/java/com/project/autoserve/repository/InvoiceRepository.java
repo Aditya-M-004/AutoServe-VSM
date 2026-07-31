@@ -1,5 +1,6 @@
 package com.project.autoserve.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     Optional<Invoice> findByJobCard(JobCard jobCard);
 
     boolean existsByJobCard(JobCard jobCard);
+    
+    List<Invoice> findByJobCardIn(List<JobCard> jobCards);
+    
+    long count();
+
+    List<Invoice> findTop5ByOrderByCreatedAtDesc();
 
 }
