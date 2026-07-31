@@ -1,6 +1,8 @@
 package com.project.autoserve.repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -27,5 +29,19 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     long countByVehicleUser(User user);
     
     List<Appointment> findTop5ByOrderByCreatedAtDesc();
+    
+    Optional<Appointment> findFirstByVehicleUserAndAppointmentDateGreaterThanEqualOrderByAppointmentDateAsc(
+            User user,
+            LocalDate appointmentDate
+    );
+    
+    long countByMechanicAndAppointmentDate(
+            Mechanic mechanic,
+            LocalDate appointmentDate
+    );
+    
+    List<Appointment> findTop5ByMechanicOrderByAppointmentDateDesc(
+            Mechanic mechanic
+    );
 
 }

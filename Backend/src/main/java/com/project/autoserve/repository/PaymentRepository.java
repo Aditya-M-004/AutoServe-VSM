@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.project.autoserve.entity.Invoice;
 import com.project.autoserve.entity.Payment;
+import com.project.autoserve.entity.User;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
@@ -28,5 +29,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     		WHERE p.paymentStatus = com.project.autoserve.enums.PaymentStatus.SUCCESS
     		""")
     		BigDecimal getTotalRevenue();
+    
+    @Query("""
+    		SELECT COALESCE(SUM(p.amount),0)
+    		FROM Payment p
+    		WHERE p.invoice.jobCard.appointment.vehicle.user = :user
+    		AND p.paymentStatus = com.project.autoserve.enums.PaymentStatus.SUCCESS
+    		""")
+    		BigDecimal getTotalSpentByUser(User user);
 
 }

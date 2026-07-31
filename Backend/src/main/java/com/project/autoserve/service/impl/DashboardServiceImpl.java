@@ -1,6 +1,7 @@
 package com.project.autoserve.service.impl;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,7 @@ import com.project.autoserve.dto.dashboard.AdminDashboardResponseDTO;
 import com.project.autoserve.dto.dashboard.CustomerDashboardResponseDTO;
 import com.project.autoserve.dto.dashboard.MechanicDashboardResponseDTO;
 import com.project.autoserve.dto.payment.PaymentResponseDTO;
+import com.project.autoserve.dto.servicehistory.ServiceHistoryResponseDTO;
 import com.project.autoserve.entity.Appointment;
 import com.project.autoserve.entity.Mechanic;
 import com.project.autoserve.entity.Payment;
@@ -27,6 +29,7 @@ import com.project.autoserve.repository.PaymentRepository;
 import com.project.autoserve.repository.UserRepository;
 import com.project.autoserve.repository.VehicleRepository;
 import com.project.autoserve.service.DashboardService;
+import com.project.autoserve.service.ServiceHistoryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +51,8 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final MechanicRepository mechanicRepository;
     
+    private final ServiceHistoryService serviceHistoryService;
+    
     
     // 1. Public Methods
     
@@ -59,17 +64,17 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public CustomerDashboardResponseDTO getCustomerDashboard() {
-
-        return null;
+        return buildCustomerDashboard();
     }
 
     @Override
     public MechanicDashboardResponseDTO getMechanicDashboard() {
-
-        return null;
+        return buildMechanicDashboard();
     }
     
     // 2. Builder Methods
+    
+    //Admin
     
     private AdminDashboardResponseDTO buildAdminDashboard() {
 
@@ -129,6 +134,73 @@ public class DashboardServiceImpl implements DashboardService {
                 .toList();
     }
     
+    //Customer
+    
+    private CustomerDashboardResponseDTO buildCustomerDashboard() {
+
+        User user = getLoggedInUser();
+
+        return CustomerDashboardResponseDTO.builder()
+                .totalVehicles(vehicleRepository.countByUser(user))
+                .totalAppointments(appointmentRepository.countByVehicleUser(user))
+                .completedServices(jobCardRepository.countByAppointmentVehicleUser(user))
+                .totalSpent(paymentRepository.getTotalSpentByUser(user))
+                .upcomingAppointment(buildUpcomingAppointment(user))
+                .recentServices(buildRecentServices())
+                .build();
+    }
+    
+    private List<ServiceHistoryResponseDTO> buildRecentServices() {
+
+        return serviceHistoryService
+                .getMyServiceHistory()
+                .stream()
+                .limit(5)
+                .toList();
+    }
+    
+    //Mechanic
+    
+    private MechanicDashboardResponseDTO buildMechanicDashboard() {
+
+        User user = getLoggedInUser();
+
+        Mechanic mechanic = mechanicRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Mechanic not found"));
+
+        return MechanicDashboardResponseDTO.builder()
+                .assignedJobs(
+                        appointmentRepository.countByMechanic(mechanic)
+                )
+                .completedJobs(
+                        jobCardRepository.countByAppointmentMechanicAndStatus(
+                                mechanic,
+                                JobStatus.COMPLETED
+                        )
+                )
+                .todayAppointments(
+                        appointmentRepository.countByMechanicAndAppointmentDate(
+                                mechanic,
+                                LocalDate.now()
+                        )
+                )
+                .todayAppointmentDetails(
+                        buildMechanicRecentAppointments(mechanic)
+                )
+                .build();
+    }
+    
+    private List<AppointmentResponseDTO> buildMechanicRecentAppointments(
+            Mechanic mechanic
+    ) {
+
+        return appointmentRepository
+                .findTop5ByMechanicOrderByAppointmentDateDesc(mechanic)
+                .stream()
+                .map(this::mapAppointment)
+                .toList();
+    }
+    
     //3. Helper Methods
     
     private AppointmentResponseDTO mapAppointment(Appointment appointment) {
@@ -162,6 +234,21 @@ public class DashboardServiceImpl implements DashboardService {
                 .paymentDate(payment.getPaymentDate())
                 .build();
     }
+    
+    private AppointmentResponseDTO buildUpcomingAppointment(User user) {
+
+        return appointmentRepository
+                .findFirstByVehicleUserAndAppointmentDateGreaterThanEqualOrderByAppointmentDateAsc(
+                        user,
+                        LocalDate.now()
+                )
+                .map(this::mapAppointment)
+                .orElse(null);
+    }
+    
+
+    
+    
     
     private User getLoggedInUser() {
 

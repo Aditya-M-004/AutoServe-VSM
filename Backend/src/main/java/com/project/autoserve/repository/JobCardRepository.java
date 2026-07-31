@@ -26,4 +26,9 @@ public interface JobCardRepository extends JpaRepository<JobCard, Long> {
     long countByAppointmentMechanic(Mechanic mechanic);
     
     long count();
+    
+    long countByAppointmentMechanicAndStatus(
+            Mechanic mechanic,
+            JobStatus status
+    );
 }

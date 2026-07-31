@@ -23,6 +23,6 @@ public class MechanicDashboardResponseDTO {
 
     private Long todayAppointments;
 
-    private List<AppointmentResponseDTO> recentAppointments;
+    private List<AppointmentResponseDTO> todayAppointmentDetails;
 
 }

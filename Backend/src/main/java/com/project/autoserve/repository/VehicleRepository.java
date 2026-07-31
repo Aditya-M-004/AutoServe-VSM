@@ -13,6 +13,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     boolean existsByVehicleNumber(String vehicleNumber);
     
+    long countByUser(User user);
+    
     long count();
 
 }
