@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 
 import com.project.autoserve.dto.mechanic.CreateMechanicRequestDTO;
 import com.project.autoserve.dto.mechanic.MechanicResponseDTO;
+import com.project.autoserve.dto.mechanic.UpdateMechanicRequestDTO;
 import com.project.autoserve.entity.Mechanic;
 import com.project.autoserve.entity.User;
 import com.project.autoserve.enums.Role;
 import com.project.autoserve.enums.UserStatus;
 import com.project.autoserve.exception.DuplicateResourceException;
+import com.project.autoserve.exception.ResourceNotFoundException;
 import com.project.autoserve.repository.MechanicRepository;
 import com.project.autoserve.repository.UserRepository;
 import com.project.autoserve.service.MechanicService;
 import com.project.autoserve.util.MapperUtil;
-import com.project.autoserve.exception.ResourceNotFoundException;
-import com.project.autoserve.dto.mechanic.UpdateMechanicRequestDTO;
 
 
 @Service

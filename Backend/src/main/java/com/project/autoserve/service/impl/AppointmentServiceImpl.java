@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.project.autoserve.dto.appointment.AppointmentRequestDTO;
 import com.project.autoserve.dto.appointment.AppointmentResponseDTO;
 import com.project.autoserve.entity.Appointment;
-import com.project.autoserve.entity.Mechanic;
 import com.project.autoserve.entity.User;
 import com.project.autoserve.entity.Vehicle;
 import com.project.autoserve.enums.AppointmentStatus;

@@ -15,8 +15,9 @@ import com.project.autoserve.entity.Appointment;
 import com.project.autoserve.entity.Invoice;
 import com.project.autoserve.entity.JobCard;
 import com.project.autoserve.entity.Payment;
-import com.project.autoserve.entity.Vehicle;
 import com.project.autoserve.entity.User;
+import com.project.autoserve.entity.Vehicle;
+import com.project.autoserve.exception.ResourceNotFoundException;
 import com.project.autoserve.repository.AppointmentRepository;
 import com.project.autoserve.repository.InvoiceRepository;
 import com.project.autoserve.repository.JobCardRepository;
@@ -24,7 +25,6 @@ import com.project.autoserve.repository.PaymentRepository;
 import com.project.autoserve.repository.UserRepository;
 import com.project.autoserve.repository.VehicleRepository;
 import com.project.autoserve.service.ServiceHistoryService;
-import com.project.autoserve.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

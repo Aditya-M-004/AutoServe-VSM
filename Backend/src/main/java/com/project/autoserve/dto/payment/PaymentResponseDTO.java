@@ -6,7 +6,11 @@ import java.time.LocalDateTime;
 import com.project.autoserve.enums.PaymentMethod;
 import com.project.autoserve.enums.PaymentStatus;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

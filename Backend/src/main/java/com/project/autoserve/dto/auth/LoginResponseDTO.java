@@ -2,7 +2,10 @@ package com.project.autoserve.dto.auth;
 
 import com.project.autoserve.enums.Role;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

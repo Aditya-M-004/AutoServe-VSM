@@ -1,23 +1,22 @@
 package com.project.autoserve.util;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.project.autoserve.dto.appointment.AppointmentResponseDTO;
 import com.project.autoserve.dto.invoice.InvoiceResponseDTO;
 import com.project.autoserve.dto.jobcard.JobCardResponseDTO;
+import com.project.autoserve.dto.jobcardpart.JobCardPartResponseDTO;
 import com.project.autoserve.dto.mechanic.MechanicResponseDTO;
 import com.project.autoserve.dto.payment.PaymentResponseDTO;
 import com.project.autoserve.dto.vehicle.VehicleResponseDTO;
 import com.project.autoserve.entity.Appointment;
 import com.project.autoserve.entity.Invoice;
 import com.project.autoserve.entity.JobCard;
+import com.project.autoserve.entity.JobCardPart;
 import com.project.autoserve.entity.Mechanic;
 import com.project.autoserve.entity.Payment;
-import com.project.autoserve.entity.SparePart;
 import com.project.autoserve.entity.Vehicle;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import com.project.autoserve.dto.jobcardpart.JobCardPartResponseDTO;
-import com.project.autoserve.entity.JobCardPart;
 
 public class MapperUtil {
 
