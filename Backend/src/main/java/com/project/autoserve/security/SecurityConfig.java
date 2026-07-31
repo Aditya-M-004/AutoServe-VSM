@@ -117,7 +117,9 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "MECHANIC")
 
                         .requestMatchers(HttpMethod.DELETE, "/api/jobcard-parts/**")
-                        .hasRole("ADMIN")
+                        .hasRole("ADMIN")                        
+                        
+                        ///JOBCARDPART API
                         
                         .requestMatchers(HttpMethod.POST,
                                 "/api/invoices/generate/**")
@@ -126,6 +128,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/invoices/**")
                         .hasAnyRole("ADMIN", "MECHANIC")
+                                                
+                        ///PAYMENT APIS
+                        
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/payments")
+                        .hasRole("CUSTOMER")
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/payments")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/payments/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
 
                         // ===========================
                         // Any other request

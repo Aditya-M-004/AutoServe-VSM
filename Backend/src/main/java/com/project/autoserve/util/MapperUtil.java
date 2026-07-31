@@ -103,9 +103,12 @@ public class MapperUtil {
 
         return PaymentResponseDTO.builder()
                 .paymentId(payment.getPaymentId())
+                .invoiceId(payment.getInvoice().getInvoiceId())
                 .amount(payment.getAmount())
-                .paymentStatus(payment.getPaymentStatus())
+                .paymentMethod(payment.getPaymentMethod())
                 .transactionId(payment.getTransactionId())
+                .paymentStatus(payment.getPaymentStatus())
+                .paymentDate(payment.getPaymentDate())
                 .build();
     }
     
