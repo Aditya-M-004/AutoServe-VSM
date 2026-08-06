@@ -31,6 +31,44 @@ const InvoiceDetails = () => {
     }
   };
 
+  const handleDownload = async () => {
+    try {
+      const response = await invoiceService.downloadInvoicePdf(
+        invoice.invoiceId,
+      );
+
+      const blob = response.data;
+      
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.download = `Invoice_${invoice.invoiceId}.pdf`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Invoice downloaded successfully.");
+    } catch (err) {
+      console.log(err);
+      console.error(err);
+console.log("Response:", response);
+      console.log("Status:", response.status);
+      console.log("Headers:", response.headers);
+      console.log("Blob:", response.data);
+      console.log("Blob instanceof Blob:", response.data instanceof Blob);
+      toast.error("Failed to download invoice.");
+    }
+  };
+
   if (loading) {
     return <LoadingSpinner text="Loading Invoice..." />;
   }
@@ -148,22 +186,34 @@ const InvoiceDetails = () => {
               </span>
             </div>
 
-            {invoice.status === "PAID" || invoice.paymentStatus === "PAID" ? (
-              <button className="btn btn-success" disabled>
-                <i className="bi bi-check-circle me-2"></i>
-                Paid
-              </button>
-            ) : (
+            <div className="d-flex gap-2">
               <button
-                className="btn btn-success"
-                onClick={() =>
-                  navigate(`/customer/payments?invoiceId=${invoice.invoiceId}`)
-                }
+                className="btn btn-outline-primary"
+                onClick={handleDownload}
               >
-                <i className="bi bi-credit-card me-2"></i>
-                Pay Now
+                <i className="bi bi-download me-2"></i>
+                Download PDF
               </button>
-            )}
+
+              {invoice.status === "PAID" || invoice.paymentStatus === "PAID" ? (
+                <button className="btn btn-success" disabled>
+                  <i className="bi bi-check-circle me-2"></i>
+                  Paid
+                </button>
+              ) : (
+                <button
+                  className="btn btn-success"
+                  onClick={() =>
+                    navigate(
+                      `/customer/payments?invoiceId=${invoice.invoiceId}`,
+                    )
+                  }
+                >
+                  <i className="bi bi-credit-card me-2"></i>
+                  Pay Now
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

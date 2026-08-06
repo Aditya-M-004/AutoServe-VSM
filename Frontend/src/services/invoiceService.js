@@ -1,4 +1,4 @@
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance from "../api/axiosInstance";
 
 export const invoiceService = {
   generateInvoice: async (jobId) => {
@@ -17,7 +17,13 @@ export const invoiceService = {
   },
 
   getAllInvoices: async () => {
-    const response = await axiosInstance.get('/invoices');
+    const response = await axiosInstance.get("/invoices");
     return response.data;
+  },
+
+  downloadInvoicePdf: async (invoiceId) => {
+    return await axiosInstance.get(`/invoices/${invoiceId}/pdf`, {
+      responseType: "blob",
+    });
   },
 };

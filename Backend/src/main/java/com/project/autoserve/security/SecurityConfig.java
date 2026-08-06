@@ -162,7 +162,7 @@ public class SecurityConfig {
                                 "/api/payments/**")
                         .hasAnyRole("ADMIN", "CUSTOMER")
                         
-                     // RAZORPAY APIS
+                        // RAZORPAY APIS
 
                         .requestMatchers(
                                 HttpMethod.POST,
@@ -180,6 +180,18 @@ public class SecurityConfig {
                                 HttpMethod.GET,
                                 "/api/service-history/all")
                         .hasRole("ADMIN")
+                        
+                        //PROFILE APIS
+                        
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/customer/profile")
+                        .hasRole("CUSTOMER")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/customer/profile")
+                        .hasRole("CUSTOMER")
 
                         // ===========================
                         // Any other request

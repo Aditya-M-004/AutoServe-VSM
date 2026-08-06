@@ -2,7 +2,10 @@ package com.project.autoserve.controller;
 
 import java.util.List;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.autoserve.dto.invoice.InvoiceResponseDTO;
 import com.project.autoserve.service.InvoiceService;
+import com.project.autoserve.service.pdf.InvoicePdfService;
 import com.project.autoserve.util.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+    
+    private final InvoicePdfService invoicePdfService;
 
     @PostMapping("/generate/{jobId}")
     public ResponseEntity<ApiResponse<InvoiceResponseDTO>> generateInvoice(
@@ -76,5 +82,20 @@ public class InvoiceController {
                         .message("Invoices fetched successfully.")
                         .data(response)
                         .build());
+    }
+    
+    @GetMapping("/{invoiceId}/pdf")
+    public ResponseEntity<ByteArrayResource> downloadInvoicePdf(
+            @PathVariable Long invoiceId) {
+
+        ByteArrayResource pdf =
+                invoicePdfService.generateInvoicePdf(invoiceId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=Invoice_" + invoiceId + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(pdf.contentLength())
+                .body(pdf);
     }
 }

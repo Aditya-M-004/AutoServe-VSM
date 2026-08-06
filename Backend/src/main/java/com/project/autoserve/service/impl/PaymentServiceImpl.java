@@ -16,6 +16,7 @@ import com.project.autoserve.entity.User;
 import com.project.autoserve.enums.InvoiceStatus;
 import com.project.autoserve.enums.PaymentStatus;
 import com.project.autoserve.enums.Role;
+import com.project.autoserve.exception.AccessDeniedException;
 import com.project.autoserve.exception.BadRequestException;
 import com.project.autoserve.exception.ResourceAlreadyExistsException;
 import com.project.autoserve.exception.ResourceNotFoundException;
@@ -59,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
         	            .getUserId()
         	            .equals(user.getUserId())) {
 
-        	    throw new BadRequestException(
+        	    throw new AccessDeniedException(
         	            "You are not authorized to pay this invoice."
         	    );
         	}
@@ -117,7 +118,7 @@ public class PaymentServiceImpl implements PaymentService {
         	            .getUserId()
         	            .equals(user.getUserId())) {
 
-        	    throw new BadRequestException(
+        	    throw new AccessDeniedException(
         	            "You are not authorized to view this payment."
         	    );
         	}
@@ -149,7 +150,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .getUserId()
                         .equals(user.getUserId())) {
 
-            throw new BadRequestException(
+            throw new AccessDeniedException(
                     "You are not authorized to view this payment.");
         }
 

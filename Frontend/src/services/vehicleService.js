@@ -1,17 +1,28 @@
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance from "../api/axiosInstance";
 
 export const vehicleService = {
   // Get vehicles for logged in customer
-  getVehicles: async () => {
-    const response = await axiosInstance.get('/vehicles');
+  getVehicles: async (search = "") => {
+    const response = await axiosInstance.get("/vehicles", {
+      params: {
+        search,
+      },
+    });
+
     return response.data;
   },
 
   // Get all registered vehicles (Admin access)
-  getAllVehicles: async () => {
-    const response = await axiosInstance.get('/vehicles/all');
+  getAllVehicles: async (search = "") => {
+
+    const response = await axiosInstance.get("/vehicles/all", {
+        params: {
+            search
+        }
+    });
+
     return response.data;
-  },
+},
 
   getVehicleById: async (id) => {
     const response = await axiosInstance.get(`/vehicles/${id}`);
@@ -19,7 +30,7 @@ export const vehicleService = {
   },
 
   addVehicle: async (vehicleData) => {
-    const response = await axiosInstance.post('/vehicles', vehicleData);
+    const response = await axiosInstance.post("/vehicles", vehicleData);
     return response.data;
   },
 

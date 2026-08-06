@@ -60,16 +60,31 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleResponseDTO> getMyVehicles(String userEmail) {
+    public List<VehicleResponseDTO> getMyVehicles(
+            String userEmail,
+            String search) {
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found."));
 
-        return vehicleRepository.findByUser(user)
-                .stream()
+        List<Vehicle> vehicles;
+
+        if (search == null || search.isBlank()) {
+
+            vehicles = vehicleRepository.findByUser(user);
+
+        } else {
+
+            vehicles = vehicleRepository.searchMyVehicles(
+                    user,
+                    search);
+
+        }
+
+        return vehicles.stream()
                 .map(MapperUtil::toVehicleResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -83,10 +98,22 @@ public class VehicleServiceImpl implements VehicleService {
     }
     
     @Override
-    public List<VehicleResponseDTO> getAllVehicles() {
+    public List<VehicleResponseDTO> getAllVehicles(
+            String search) {
 
-        return vehicleRepository.findAll()
-                .stream()
+        List<Vehicle> vehicles;
+
+        if (search == null || search.isBlank()) {
+
+            vehicles = vehicleRepository.findAll();
+
+        } else {
+
+            vehicles = vehicleRepository.searchAllVehicles(search);
+
+        }
+
+        return vehicles.stream()
                 .map(MapperUtil::toVehicleResponse)
                 .toList();
     }

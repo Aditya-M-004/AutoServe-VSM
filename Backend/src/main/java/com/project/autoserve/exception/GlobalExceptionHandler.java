@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.builder()
                         .success(false)
-                        .message("Access denied.")
+                        .message(ex.getMessage())
                         .data(null)
                         .build());
     }

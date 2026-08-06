@@ -17,6 +17,7 @@ import com.project.autoserve.entity.Mechanic;
 import com.project.autoserve.entity.User;
 import com.project.autoserve.enums.AppointmentStatus;
 import com.project.autoserve.enums.JobStatus;
+import com.project.autoserve.exception.AccessDeniedException;
 import com.project.autoserve.exception.BadRequestException;
 import com.project.autoserve.exception.DuplicateResourceException;
 import com.project.autoserve.exception.ResourceNotFoundException;
@@ -79,7 +80,7 @@ public class JobCardServiceImpl implements JobCardService {
         if (!appointment.getMechanic().getMechanicId()
                 .equals(loggedInMechanic.getMechanicId())) {
 
-            throw new BadRequestException(
+            throw new AccessDeniedException(
                     "You can only create Job Cards for appointments assigned to you."
             );
         }

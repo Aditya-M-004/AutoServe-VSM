@@ -25,10 +25,11 @@ public interface VehicleService {
      * @return List of vehicles.
      */
     List<VehicleResponseDTO> getMyVehicles(
-            String userEmail);
-    
-    List<VehicleResponseDTO> getAllVehicles();
+            String userEmail,
+            String search);
 
+    List<VehicleResponseDTO> getAllVehicles(
+            String search);
     /**
      * Get vehicle by id.
      *

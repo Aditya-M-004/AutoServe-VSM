@@ -17,7 +17,7 @@ import com.project.autoserve.entity.JobCardPart;
 import com.project.autoserve.entity.User;
 import com.project.autoserve.enums.InvoiceStatus;
 import com.project.autoserve.enums.Role;
-import com.project.autoserve.exception.BadRequestException;
+import com.project.autoserve.exception.AccessDeniedException;
 import com.project.autoserve.exception.ResourceAlreadyExistsException;
 import com.project.autoserve.exception.ResourceNotFoundException;
 import com.project.autoserve.repository.InvoiceRepository;
@@ -98,25 +98,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Invoice not found with ID : " + invoiceId));
         
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        User user = userRepository.findByEmail(authentication.getName())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found."));
-        
-        if (user.getRole() != Role.ADMIN &&
-        	    !invoice.getJobCard()
-        	            .getAppointment()
-        	            .getVehicle()
-        	            .getUser()
-        	            .getUserId()
-        	            .equals(user.getUserId())) {
-
-        	    throw new BadRequestException(
-        	            "You are not authorized to view this invoice."
-        	    );
-        	}
+        validateInvoiceAccess(invoice);
 
         return MapperUtil.toInvoiceResponse(invoice);
     }
@@ -127,11 +109,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         JobCard jobCard = jobCardRepository.findById(jobId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Job Card not found with ID : " + jobId));
+                        new ResourceNotFoundException(
+                                "Job Card not found with ID : " + jobId));
 
         Invoice invoice = invoiceRepository.findByJobCard(jobCard)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Invoice not found for Job Card : " + jobId));
+                        new ResourceNotFoundException(
+                                "Invoice not found for Job Card : " + jobId));
+
+        validateInvoiceAccess(invoice);
 
         return MapperUtil.toInvoiceResponse(invoice);
     }
@@ -158,6 +144,28 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoices.stream()
                 .map(MapperUtil::toInvoiceResponse)
                 .toList();
+    }
+    
+    private void validateInvoiceAccess(Invoice invoice) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found."));
+
+        if (user.getRole() != Role.ADMIN &&
+                !invoice.getJobCard()
+                        .getAppointment()
+                        .getVehicle()
+                        .getUser()
+                        .getUserId()
+                        .equals(user.getUserId())) {
+
+            throw new AccessDeniedException(
+                    "You are not authorized to view this invoice.");
+        }
     }
 
 }

@@ -57,6 +57,7 @@ public class ProfileServiceImpl implements ProfileService {
 	            .totalVehicles(totalVehicles)
 	            .totalAppointments(totalAppointments)
 	            .totalSpent(totalSpent)
+	            .accountStatus(user.getStatus())
 	            .build();
 	}
 	

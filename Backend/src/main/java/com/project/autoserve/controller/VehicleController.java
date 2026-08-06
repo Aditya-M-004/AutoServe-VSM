@@ -19,6 +19,7 @@ import com.project.autoserve.service.VehicleService;
 import com.project.autoserve.util.ApiResponse;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -50,10 +51,13 @@ public class VehicleController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<VehicleResponseDTO>>> getMyVehicles(
-            Principal principal) {
+            Principal principal,
+            @RequestParam(required = false) String search) {
 
         List<VehicleResponseDTO> vehicles =
-                vehicleService.getMyVehicles(principal.getName());
+                vehicleService.getMyVehicles(
+                        principal.getName(),
+                        search);
 
         return ResponseEntity.ok(
                 ApiResponse.<List<VehicleResponseDTO>>builder()
@@ -79,17 +83,18 @@ public class VehicleController {
     }
     
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<VehicleResponseDTO>>> getAllVehicles() {
+    public ResponseEntity<ApiResponse<List<VehicleResponseDTO>>> getAllVehicles(
+            @RequestParam(required = false) String search) {
 
-        List<VehicleResponseDTO> vehicles = vehicleService.getAllVehicles();
+        List<VehicleResponseDTO> vehicles =
+                vehicleService.getAllVehicles(search);
 
         return ResponseEntity.ok(
                 ApiResponse.<List<VehicleResponseDTO>>builder()
                         .success(true)
                         .message("Vehicles fetched successfully.")
                         .data(vehicles)
-                        .build()
-        );
+                        .build());
     }
 
 }

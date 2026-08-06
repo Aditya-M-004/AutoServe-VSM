@@ -3,6 +3,8 @@ package com.project.autoserve.dto.profile;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.project.autoserve.enums.UserStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +33,7 @@ public class CustomerProfileResponseDTO {
     private Long totalAppointments;
 
     private BigDecimal totalSpent;
+    
+    private UserStatus accountStatus;
 
 }
