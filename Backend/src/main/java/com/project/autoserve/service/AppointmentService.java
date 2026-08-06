@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.project.autoserve.dto.appointment.AppointmentRequestDTO;
 import com.project.autoserve.dto.appointment.AppointmentResponseDTO;
+import com.project.autoserve.enums.AppointmentStatus;
 
 public interface AppointmentService {
 
@@ -35,5 +36,17 @@ public interface AppointmentService {
      */
     AppointmentResponseDTO getAppointmentById(
             Long appointmentId);
+    
+    List<AppointmentResponseDTO> getAllAppointments();
+    
+    AppointmentResponseDTO assignMechanic(
+            Long appointmentId,
+            Long mechanicId
+    );
+
+    AppointmentResponseDTO updateAppointmentStatus(
+            Long appointmentId,
+            AppointmentStatus status
+    );
 
 }

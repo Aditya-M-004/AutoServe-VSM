@@ -40,5 +40,13 @@ public class AdminDashboardResponseDTO {
     private List<AppointmentResponseDTO> recentAppointments;
 
     private List<PaymentResponseDTO> recentPayments;
+    
+    private Long cancelledAppointments;
+
+    private Long workingJobs;
+
+    private Long todayAppointments;
+
+    private Long todayRevenue;
 
 }

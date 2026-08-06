@@ -2,7 +2,9 @@ package com.project.autoserve.dto.invoice;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import com.project.autoserve.dto.jobcardpart.JobCardPartResponseDTO;
 import com.project.autoserve.enums.InvoiceStatus;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +24,16 @@ public class InvoiceResponseDTO {
 
     private Long jobId;
 
+    private String customerName;
+
+    private String mechanicName;
+
+    private String vehicleBrand;
+
+    private String vehicleModel;
+
+    private String vehicleNumber;
+
     private BigDecimal partsTotal;
 
     private BigDecimal laborCost;
@@ -38,4 +50,5 @@ public class InvoiceResponseDTO {
 
     private InvoiceStatus status;
 
+    private List<JobCardPartResponseDTO> jobCardParts;
 }

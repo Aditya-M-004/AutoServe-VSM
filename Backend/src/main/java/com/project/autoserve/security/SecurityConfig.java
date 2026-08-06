@@ -50,12 +50,31 @@ public class SecurityConfig {
                         // ===========================
                         // Public APIs
                         // ===========================
-                        .requestMatchers("/api/auth/**")
-                        .permitAll()
+                		.requestMatchers(
+                		        "/api/auth/register",
+                		        "/api/auth/login",
+                		        "/api/auth/forgot-password",
+                		        "/api/auth/verify-otp",
+                		        "/api/auth/reset-password",
+                		        "/api/auth/test-email"
+                		)
+                		.permitAll()
+                		
+                		.requestMatchers(
+                		        HttpMethod.PUT,
+                		        "/api/auth/change-password"
+                		)
+                		.authenticated()
 
                         // ===========================
                         // Mechanic Management
                         // ===========================
+                		
+                		.requestMatchers(
+                			    HttpMethod.PUT,
+                			    "/api/mechanics/me/availability"
+                			).hasRole("MECHANIC")
+                		
                         .requestMatchers("/api/mechanics/**")
                         .hasRole("ADMIN")
 
@@ -93,13 +112,13 @@ public class SecurityConfig {
                         // Job Card APIs
                         // ===========================
                         .requestMatchers(HttpMethod.GET, "/api/jobcards/**")
-                        .hasAnyRole("ADMIN", "MECHANIC")
+                        .hasAnyRole("ADMIN", "MECHANIC", "CUSTOMER")
 
                         .requestMatchers(HttpMethod.POST, "/api/jobcards/**")
-                        .hasAnyRole("ADMIN", "MECHANIC")
+                        .hasRole("MECHANIC")
 
                         .requestMatchers(HttpMethod.PUT, "/api/jobcards/**")
-                        .hasAnyRole("ADMIN", "MECHANIC")
+                        .hasRole("MECHANIC")
 
                         .requestMatchers(HttpMethod.DELETE, "/api/jobcards/**")
                         .hasRole("ADMIN")
@@ -127,7 +146,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/invoices/**")
-                        .hasAnyRole("ADMIN", "MECHANIC")
+                        .hasAnyRole("ADMIN", "MECHANIC", "CUSTOMER")
                                                 
                         //PAYMENT APIS
                         
@@ -137,11 +156,18 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/payments")
-                        .hasRole("ADMIN")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/payments/**")
                         .hasAnyRole("ADMIN", "CUSTOMER")
+                        
+                     // RAZORPAY APIS
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/razorpay/create-order")
+                        .hasRole("CUSTOMER")
                         
                         //SERVICE HISTORY APIS
                         
@@ -182,5 +208,7 @@ public class SecurityConfig {
 
         return configuration.getAuthenticationManager();
     }
+    
+    
 
 }

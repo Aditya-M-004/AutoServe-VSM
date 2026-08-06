@@ -2,6 +2,7 @@ package com.project.autoserve.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -49,9 +50,25 @@ public class JobCardPartServiceImpl implements JobCardPartService {
                         new ResourceNotFoundException(
                                 "Spare Part not found with ID: " + request.getPartId()));
 
-        if (jobCardPartRepository.findByJobCardAndSparePart(jobCard, sparePart).isPresent()) {
-            throw new DuplicateResourceException(
-                    "This spare part already exists in the Job Card.");
+        Optional<JobCardPart> existingPart =
+                jobCardPartRepository.findByJobCardAndSparePart(jobCard, sparePart);
+
+        if (existingPart.isPresent()) {
+
+            JobCardPart part = existingPart.get();
+
+            part.setQuantity(part.getQuantity() + request.getQuantity());
+
+            BigDecimal subtotal = sparePart.getUnitPrice()
+                    .multiply(BigDecimal.valueOf(part.getQuantity()));
+
+            part.setSubtotal(subtotal);
+
+            part = jobCardPartRepository.save(part);
+
+            recalculateEstimatedCost(jobCard);
+
+            return MapperUtil.toJobCardPartResponse(part);
         }
 
         BigDecimal subtotal = sparePart.getUnitPrice()
@@ -66,6 +83,8 @@ public class JobCardPartServiceImpl implements JobCardPartService {
                 .build();
 
         jobCardPart = jobCardPartRepository.save(jobCardPart);
+
+        recalculateEstimatedCost(jobCard);
 
         return MapperUtil.toJobCardPartResponse(jobCardPart);
     }
@@ -103,6 +122,8 @@ public class JobCardPartServiceImpl implements JobCardPartService {
 
         jobCardPart = jobCardPartRepository.save(jobCardPart);
 
+        recalculateEstimatedCost(jobCardPart.getJobCard());
+
         return MapperUtil.toJobCardPartResponse(jobCardPart);
     }
 
@@ -114,7 +135,29 @@ public class JobCardPartServiceImpl implements JobCardPartService {
                         new ResourceNotFoundException(
                                 "Job Card Part not found with ID: " + jobCardPartId));
 
+        JobCard jobCard = jobCardPart.getJobCard();
         jobCardPartRepository.delete(jobCardPart);
+
+        recalculateEstimatedCost(jobCard);
+        jobCardPartRepository.delete(jobCardPart);
+    }
+    
+    private void recalculateEstimatedCost(JobCard jobCard) {
+
+        List<JobCardPart> parts =
+                jobCardPartRepository.findByJobCard(jobCard);
+
+        BigDecimal partsTotal = parts.stream()
+                .map(JobCardPart::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal labour = jobCard.getLaborCost() == null
+                ? BigDecimal.ZERO
+                : jobCard.getLaborCost();
+
+        jobCard.setEstimatedCost(partsTotal.add(labour));
+
+        jobCardRepository.save(jobCard);
     }
 
 }

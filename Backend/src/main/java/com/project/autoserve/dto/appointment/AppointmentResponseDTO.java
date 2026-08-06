@@ -13,6 +13,8 @@ public class AppointmentResponseDTO {
 
     private Long appointmentId;
 
+    private Long jobId;
+
     private String vehicleNumber;
 
     private String mechanicName;
@@ -22,4 +24,10 @@ public class AppointmentResponseDTO {
     private AppointmentStatus status;
 
     private String problemDescription;
+    
+    private String customerName;
+
+    private String vehicleMake;
+
+    private String vehicleModel;
 }

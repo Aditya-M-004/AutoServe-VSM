@@ -11,7 +11,7 @@ public class AppointmentRequestDTO {
 
     private Long vehicleId;
 
-    @FutureOrPresent
+    @FutureOrPresent(message = "Appointment date cannot be in the past")
     private LocalDate appointmentDate;
 
     @NotBlank

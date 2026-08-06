@@ -1,34 +1,57 @@
-import axiosInstance from "../api/axiosConfig";
-
-const register = async (userData) => {
-    const response = await axiosInstance.post("/auth/register", userData);
-    return response.data;
-};
-
-const login = async (credentials) => {
-    const response = await axiosInstance.post("/auth/login", credentials);
-
-    if (response.data.success) {
-        localStorage.setItem("token", response.data.data.token);
-        localStorage.setItem("name", response.data.data.name);
-        localStorage.setItem("email", response.data.data.email);
-        localStorage.setItem("role", response.data.data.role);
-    }
-
-    return response.data;
-};
-
-const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
-    localStorage.removeItem("role");
-};
+import axiosInstance from "../api/axiosInstance";
 
 const authService = {
-    register,
-    login,
-    logout,
+  login: async (credentials) => {
+    const response = await axiosInstance.post("/auth/login", credentials);
+    return response.data;
+  },
+
+  register: async (userData) => {
+    const response = await axiosInstance.post("/auth/register", userData);
+    return response.data;
+  },
+
+  forgotPassword: async (email) => {
+    const response = await axiosInstance.post("/auth/forgot-password", {
+      email,
+    });
+    return response.data;
+  },
+
+  verifyOtp: async (email, otp) => {
+    const response = await axiosInstance.post("/auth/verify-otp", {
+      email,
+      otp,
+    });
+    return response.data;
+  },
+
+  resetPassword: async (
+    email,
+    newPassword,
+    confirmPassword
+  ) => {
+    const response = await axiosInstance.post("/auth/reset-password", {
+      email,
+      newPassword,
+      confirmPassword,
+    });
+    return response.data;
+  },
+
+    changePassword: async (
+    currentPassword,
+    newPassword,
+    confirmPassword
+  ) => {
+    const response = await axiosInstance.put("/auth/change-password", {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    });
+
+    return response.data;
+  },
 };
 
 export default authService;

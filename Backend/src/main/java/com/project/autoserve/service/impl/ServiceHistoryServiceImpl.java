@@ -114,6 +114,10 @@ public class ServiceHistoryServiceImpl implements ServiceHistoryService {
         	                invoice,
         	                payment));
         }
+        
+        history.sort(
+        	    (a, b) -> b.getAppointmentDate()
+        	            .compareTo(a.getAppointmentDate()));
 
         return history;
     }

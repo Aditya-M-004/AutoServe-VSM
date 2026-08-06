@@ -75,5 +75,15 @@ public class JobCardController {
 
         return ResponseEntity.ok("Job Card deleted successfully.");
     }
+    
+    @PutMapping("/{jobId}/finalize")
+    public ResponseEntity<JobCardResponseDTO> finalizeJobCard(
+            @PathVariable Long jobId) {
+
+        JobCardResponseDTO response =
+                jobCardService.finalizeJobCard(jobId);
+
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -16,5 +16,5 @@ public interface MechanicRepository extends JpaRepository<Mechanic, Long> {
 
     List<Mechanic> findByAvailabilityStatus(AvailabilityStatus status);
     List<Mechanic> findByUserStatus(UserStatus status);
-
+    long countByUserStatus(UserStatus status);
 }

@@ -20,6 +20,7 @@ import com.project.autoserve.entity.User;
 import com.project.autoserve.enums.AppointmentStatus;
 import com.project.autoserve.enums.JobStatus;
 import com.project.autoserve.enums.Role;
+import com.project.autoserve.enums.UserStatus;
 import com.project.autoserve.repository.AppointmentRepository;
 import com.project.autoserve.repository.InvoiceRepository;
 import com.project.autoserve.repository.JobCardRepository;
@@ -83,7 +84,7 @@ public class DashboardServiceImpl implements DashboardService {
                         userRepository.countByRole(Role.CUSTOMER))
 
                 .totalMechanics(
-                        userRepository.countByRole(Role.MECHANIC))
+                        mechanicRepository.countByUserStatus(UserStatus.ACTIVE))
 
                 .totalVehicles(
                         vehicleRepository.count())
@@ -94,6 +95,12 @@ public class DashboardServiceImpl implements DashboardService {
                 .pendingAppointments(
                         appointmentRepository.countByStatus(
                                 AppointmentStatus.PENDING))
+                
+                .cancelledAppointments(
+                	    appointmentRepository.countByStatus(
+                	        AppointmentStatus.CANCELLED
+                	    )
+                	)
 
                 .completedJobs(
                         jobCardRepository.countByStatus(
@@ -186,6 +193,9 @@ public class DashboardServiceImpl implements DashboardService {
                 .todayAppointmentDetails(
                         buildMechanicRecentAppointments(mechanic)
                 )
+                .availabilityStatus(
+                        mechanic.getAvailabilityStatus()
+                )
                 .build();
     }
     
@@ -204,21 +214,52 @@ public class DashboardServiceImpl implements DashboardService {
     
     private AppointmentResponseDTO mapAppointment(Appointment appointment) {
 
-        return AppointmentResponseDTO.builder()
-                .appointmentId(appointment.getAppointmentId())
-                .vehicleNumber(
-                        appointment.getVehicle().getVehicleNumber())
-                .mechanicName(
-                        appointment.getMechanic() != null
-                                ? appointment.getMechanic()
-                                        .getUser()
-                                        .getName()
-                                : null)
-                .appointmentDate(appointment.getAppointmentDate())
-                .status(appointment.getStatus())
-                .problemDescription(
-                        appointment.getProblemDescription())
-                .build();
+    	return AppointmentResponseDTO.builder()
+
+    		    .appointmentId(appointment.getAppointmentId())
+
+    		    .customerName(
+    		        appointment.getVehicle()
+    		                   .getUser()
+    		                   .getName()
+    		    )
+
+    		    .vehicleMake(
+    		        appointment.getVehicle()
+    		                   .getBrand()
+    		    )
+
+    		    .vehicleModel(
+    		        appointment.getVehicle()
+    		                   .getModel()
+    		    )
+
+    		    .vehicleNumber(
+    		        appointment.getVehicle()
+    		                   .getVehicleNumber()
+    		    )
+
+    		    .mechanicName(
+    		        appointment.getMechanic() != null
+    		            ? appointment.getMechanic()
+    		                         .getUser()
+    		                         .getName()
+    		            : null
+    		    )
+
+    		    .appointmentDate(
+    		        appointment.getAppointmentDate()
+    		    )
+
+    		    .status(
+    		        appointment.getStatus()
+    		    )
+
+    		    .problemDescription(
+    		        appointment.getProblemDescription()
+    		    )
+
+    		    .build();
     }
     
     private PaymentResponseDTO mapPayment(Payment payment) {

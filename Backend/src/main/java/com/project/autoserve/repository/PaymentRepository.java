@@ -23,6 +23,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findTop5ByOrderByPaymentDateDesc();
     
+    List<Payment> findByInvoiceJobCardAppointmentVehicleUser(User user);
+    
     @Query("""
     		SELECT COALESCE(SUM(p.amount),0)
     		FROM Payment p

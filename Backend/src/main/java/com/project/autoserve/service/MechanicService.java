@@ -5,7 +5,7 @@ import java.util.List;
 import com.project.autoserve.dto.mechanic.CreateMechanicRequestDTO;
 import com.project.autoserve.dto.mechanic.MechanicResponseDTO;
 import com.project.autoserve.dto.mechanic.UpdateMechanicRequestDTO;
-
+import com.project.autoserve.dto.mechanic.UpdateAvailabilityRequestDTO;
 public interface MechanicService {
 
     MechanicResponseDTO addMechanic(CreateMechanicRequestDTO request);
@@ -19,5 +19,8 @@ public interface MechanicService {
             UpdateMechanicRequestDTO request);
 
     void deactivateMechanic(Long mechanicId);
+    
+    MechanicResponseDTO updateAvailability(
+            UpdateAvailabilityRequestDTO request);
 
 }

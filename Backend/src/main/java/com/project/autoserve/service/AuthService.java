@@ -1,8 +1,12 @@
 package com.project.autoserve.service;
 
+import com.project.autoserve.dto.auth.ChangePasswordRequestDTO;
+import com.project.autoserve.dto.auth.ForgotPasswordRequestDTO;
 import com.project.autoserve.dto.auth.LoginRequestDTO;
 import com.project.autoserve.dto.auth.LoginResponseDTO;
 import com.project.autoserve.dto.auth.RegisterRequestDTO;
+import com.project.autoserve.dto.auth.ResetPasswordRequestDTO;
+import com.project.autoserve.dto.auth.VerifyOtpRequestDTO;
 
 public interface AuthService {
 
@@ -20,4 +24,11 @@ public interface AuthService {
      */
     LoginResponseDTO login(LoginRequestDTO request);
 
+    void forgotPassword(ForgotPasswordRequestDTO request);
+
+    void verifyOtp(VerifyOtpRequestDTO request);
+
+    String resetPassword(ResetPasswordRequestDTO request);
+    
+    void changePassword(ChangePasswordRequestDTO request);
 }

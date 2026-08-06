@@ -18,4 +18,6 @@ public class MechanicResponseDTO {
     private Integer experience;
 
     private AvailabilityStatus availabilityStatus;
+    
+    private String phone;
 }

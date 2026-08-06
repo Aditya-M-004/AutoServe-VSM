@@ -44,7 +44,6 @@ public class Appointment extends BaseEntity {
     @JoinColumn(name = "mechanic_id")
     private Mechanic mechanic;
 
-    @FutureOrPresent(message = "Appointment date cannot be in the past")
     @Column(nullable = false)
     private LocalDate appointmentDate;
 

@@ -1,17 +1,22 @@
-import Navbar from "./Navbar";
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import Navbar from './Navbar';
+import Sidebar from './Sidebar';
 
-const Layout = ({ children }) => {
-    return (
-        <div className="bg-light min-vh-100">
+const Layout = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-            <Navbar />
-
-            <main className="container py-4">
-                {children}
-            </main>
-
-        </div>
-    );
+  return (
+    <div className="app-container">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="main-wrapper">
+        <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <main className="page-content">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default Layout;

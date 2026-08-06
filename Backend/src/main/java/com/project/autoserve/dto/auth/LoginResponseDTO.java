@@ -21,4 +21,6 @@ public class LoginResponseDTO {
     private String email;
 
     private Role role;
+    
+    private boolean firstLogin;
 }

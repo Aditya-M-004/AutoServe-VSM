@@ -3,6 +3,7 @@ package com.project.autoserve.dto.dashboard;
 import java.util.List;
 
 import com.project.autoserve.dto.appointment.AppointmentResponseDTO;
+import com.project.autoserve.enums.AvailabilityStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,7 @@ public class MechanicDashboardResponseDTO {
     private Long todayAppointments;
 
     private List<AppointmentResponseDTO> todayAppointmentDetails;
+    
+    private AvailabilityStatus availabilityStatus;
 
 }

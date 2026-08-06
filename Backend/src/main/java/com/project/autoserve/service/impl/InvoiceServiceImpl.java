@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,12 +14,16 @@ import com.project.autoserve.dto.invoice.InvoiceResponseDTO;
 import com.project.autoserve.entity.Invoice;
 import com.project.autoserve.entity.JobCard;
 import com.project.autoserve.entity.JobCardPart;
+import com.project.autoserve.entity.User;
 import com.project.autoserve.enums.InvoiceStatus;
+import com.project.autoserve.enums.Role;
+import com.project.autoserve.exception.BadRequestException;
 import com.project.autoserve.exception.ResourceAlreadyExistsException;
 import com.project.autoserve.exception.ResourceNotFoundException;
 import com.project.autoserve.repository.InvoiceRepository;
 import com.project.autoserve.repository.JobCardPartRepository;
 import com.project.autoserve.repository.JobCardRepository;
+import com.project.autoserve.repository.UserRepository;
 import com.project.autoserve.service.InvoiceService;
 import com.project.autoserve.util.MapperUtil;
 
@@ -32,6 +38,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final JobCardRepository jobCardRepository;
     private final JobCardPartRepository jobCardPartRepository;
+    private final UserRepository userRepository;
 
     @Override
     public InvoiceResponseDTO generateInvoice(Long jobId) {
@@ -75,7 +82,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .gstAmount(gstAmount)
                 .totalAmount(totalAmount)
                 .invoiceDate(LocalDate.now())
-                .status(InvoiceStatus.GENERATED)
+                .status(InvoiceStatus.PAYMENT_PENDING)
                 .build();
 
         invoiceRepository.save(invoice);
@@ -90,6 +97,26 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Invoice not found with ID : " + invoiceId));
+        
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found."));
+        
+        if (user.getRole() != Role.ADMIN &&
+        	    !invoice.getJobCard()
+        	            .getAppointment()
+        	            .getVehicle()
+        	            .getUser()
+        	            .getUserId()
+        	            .equals(user.getUserId())) {
+
+        	    throw new BadRequestException(
+        	            "You are not authorized to view this invoice."
+        	    );
+        	}
 
         return MapperUtil.toInvoiceResponse(invoice);
     }
@@ -113,8 +140,22 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Transactional(readOnly = true)
     public List<InvoiceResponseDTO> getAllInvoices() {
 
-        return invoiceRepository.findAll()
-                .stream()
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found."));
+
+        List<Invoice> invoices;
+
+        if (user.getRole() == Role.ADMIN) {
+            invoices = invoiceRepository.findAll();
+        } else {
+            invoices = invoiceRepository.findByJobCardAppointmentVehicleUser(user);
+        }
+
+        return invoices.stream()
                 .map(MapperUtil::toInvoiceResponse)
                 .toList();
     }

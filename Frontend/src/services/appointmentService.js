@@ -1,24 +1,33 @@
-import axiosInstance from "../api/axiosConfig";
+import axiosInstance from '../api/axiosInstance';
 
-const getAllAppointments = async () => {
-    const response = await axiosInstance.get("/appointments");
+export const appointmentService = {
+  createAppointment: async (appointmentData) => {
+    const response = await axiosInstance.post('/appointments', appointmentData);
     return response.data;
-};
+  },
 
-const getAppointmentById = async (id) => {
+  getAppointments: async () => {
+    const response = await axiosInstance.get('/appointments');
+    return response.data;
+  },
+
+  getAllAppointments: async () => {
+  const response = await axiosInstance.get('/appointments/all');
+  return response.data;
+},
+
+  getAppointmentById: async (id) => {
     const response = await axiosInstance.get(`/appointments/${id}`);
     return response.data;
-};
+  },
 
-const bookAppointment = async (appointmentData) => {
-    const response = await axiosInstance.post("/appointments", appointmentData);
+  updateAppointmentStatus: async (id, status) => {
+    const response = await axiosInstance.put(`/appointments/${id}/status`, { status });
     return response.data;
-};
+  },
 
-const appointmentService = {
-    getAllAppointments,
-    getAppointmentById,
-    bookAppointment,
+  assignMechanic: async (appointmentId, mechanicId) => {
+    const response = await axiosInstance.put(`/appointments/${appointmentId}/assign`, { mechanicId });
+    return response.data;
+  },
 };
-
-export default appointmentService;

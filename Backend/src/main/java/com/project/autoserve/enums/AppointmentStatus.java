@@ -2,9 +2,10 @@ package com.project.autoserve.enums;
 
 public enum AppointmentStatus {
 
-    PENDING,
-    WORKING,
-    DONE,
-    CANCELLED
+	PENDING,
+	ACCEPTED,
+	IN_PROGRESS,
+	COMPLETED,
+	CANCELLED
 
 }

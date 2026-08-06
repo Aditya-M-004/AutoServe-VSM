@@ -17,5 +17,7 @@ public interface JobCardService {
     JobCardResponseDTO updateJobCard(Long jobId, UpdateJobCardRequestDTO request);
 
     void deleteJobCard(Long jobId);
+    
+    JobCardResponseDTO finalizeJobCard(Long jobId);
 
 }

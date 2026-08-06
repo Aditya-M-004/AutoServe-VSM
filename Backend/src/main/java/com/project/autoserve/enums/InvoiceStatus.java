@@ -2,8 +2,10 @@ package com.project.autoserve.enums;
 
 public enum InvoiceStatus {
 
-    GENERATED,
+    PAYMENT_PENDING,
 
-    PAID
+    PAID,
+
+    CANCELLED
 
 }

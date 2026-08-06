@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.project.autoserve.entity.Invoice;
 import com.project.autoserve.entity.JobCard;
+import com.project.autoserve.entity.User;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
@@ -22,4 +23,5 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     List<Invoice> findTop5ByOrderByCreatedAtDesc();
 
+    List<Invoice> findByJobCardAppointmentVehicleUser(User user);
 }

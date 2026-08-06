@@ -21,9 +21,6 @@ public class CreateMechanicRequestDTO {
     private String phone;
 
     @NotBlank
-    private String password;
-
-    @NotBlank
     private String specialization;
 
     @NotNull
@@ -31,5 +28,4 @@ public class CreateMechanicRequestDTO {
 
     @NotNull
     private AvailabilityStatus availabilityStatus;
-
 }

@@ -1,24 +1,35 @@
-import axiosInstance from "../api/axiosConfig";
+import axiosInstance from '../api/axiosInstance';
 
-const getAllVehicles = async () => {
-    const response = await axiosInstance.get("/vehicles");
+export const vehicleService = {
+  // Get vehicles for logged in customer
+  getVehicles: async () => {
+    const response = await axiosInstance.get('/vehicles');
     return response.data;
-};
+  },
 
-const getVehicleById = async (id) => {
+  // Get all registered vehicles (Admin access)
+  getAllVehicles: async () => {
+    const response = await axiosInstance.get('/vehicles/all');
+    return response.data;
+  },
+
+  getVehicleById: async (id) => {
     const response = await axiosInstance.get(`/vehicles/${id}`);
     return response.data;
-};
+  },
 
-const addVehicle = async (vehicleData) => {
-    const response = await axiosInstance.post("/vehicles", vehicleData);
+  addVehicle: async (vehicleData) => {
+    const response = await axiosInstance.post('/vehicles', vehicleData);
     return response.data;
-};
+  },
 
-const vehicleService = {
-    getAllVehicles,
-    getVehicleById,
-    addVehicle,
-};
+  updateVehicle: async (id, vehicleData) => {
+    const response = await axiosInstance.put(`/vehicles/${id}`, vehicleData);
+    return response.data;
+  },
 
-export default vehicleService;
+  deleteVehicle: async (id) => {
+    const response = await axiosInstance.delete(`/vehicles/${id}`);
+    return response.data;
+  },
+};

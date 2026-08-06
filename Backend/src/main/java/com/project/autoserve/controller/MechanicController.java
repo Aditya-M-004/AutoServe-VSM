@@ -20,6 +20,7 @@ import com.project.autoserve.service.MechanicService;
 import com.project.autoserve.util.ApiResponse;
 
 import jakarta.validation.Valid;
+import com.project.autoserve.dto.mechanic.UpdateAvailabilityRequestDTO;
 
 @RestController
 @RequestMapping("/api/mechanics")
@@ -109,6 +110,23 @@ public class MechanicController {
                 ApiResponse.<Void>builder()
                         .success(true)
                         .message("Mechanic deactivated successfully.")
+                        .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+    
+    @PutMapping("/me/availability")
+    public ResponseEntity<ApiResponse<MechanicResponseDTO>> updateAvailability(
+            @Valid @RequestBody UpdateAvailabilityRequestDTO request) {
+
+        MechanicResponseDTO mechanic =
+                mechanicService.updateAvailability(request);
+
+        ApiResponse<MechanicResponseDTO> apiResponse =
+                ApiResponse.<MechanicResponseDTO>builder()
+                        .success(true)
+                        .message("Availability updated successfully.")
+                        .data(mechanic)
                         .build();
 
         return ResponseEntity.ok(apiResponse);
