@@ -3,8 +3,6 @@ package com.project.autoserve.dto.jobcard;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
-
 import com.project.autoserve.enums.JobStatus;
 
 import lombok.AllArgsConstructor;

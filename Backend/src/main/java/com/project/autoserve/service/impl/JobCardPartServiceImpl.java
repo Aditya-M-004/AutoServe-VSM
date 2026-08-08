@@ -12,7 +12,6 @@ import com.project.autoserve.dto.jobcardpart.UpdateJobCardPartRequestDTO;
 import com.project.autoserve.entity.JobCard;
 import com.project.autoserve.entity.JobCardPart;
 import com.project.autoserve.entity.SparePart;
-import com.project.autoserve.exception.DuplicateResourceException;
 import com.project.autoserve.exception.ResourceNotFoundException;
 import com.project.autoserve.repository.JobCardPartRepository;
 import com.project.autoserve.repository.JobCardRepository;
