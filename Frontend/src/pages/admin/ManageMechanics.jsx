@@ -3,12 +3,15 @@ import { toast } from "react-toastify";
 import { mechanicService } from "../../services/mechanicService";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ModalWrapper from "../../components/ModalWrapper";
+import ConfirmModal from "../../components/common/ConfirmModal";
 
 const ManageMechanics = () => {
   const [mechanics, setMechanics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -67,12 +70,22 @@ const ManageMechanics = () => {
     }
   };
 
-  const handleDeactivate = async (id) => {
-    if (!window.confirm("Are you sure you want to deactivate this mechanic?"))
-      return;
+  const handleDeactivate = (id) => {
+    setSelectedMechanic(id);
+    setShowDeactivateModal(true);
+  };
+
+  const confirmDeactivate = async () => {
+    if (!selectedMechanic) return;
+
     try {
-      await mechanicService.deleteMechanic(id);
+      await mechanicService.deleteMechanic(selectedMechanic);
+
       toast.success("Mechanic status updated");
+
+      setShowDeactivateModal(false);
+      setSelectedMechanic(null);
+
       fetchMechanics();
     } catch (err) {
       toast.error(err.response?.data?.message || "Action failed");
@@ -325,6 +338,20 @@ const ManageMechanics = () => {
           </div>
         </form>
       </ModalWrapper>
+
+      <ConfirmModal
+        show={showDeactivateModal}
+        title="Deactivate Mechanic"
+        message="Are you sure you want to deactivate this mechanic?"
+        confirmText="Yes, Deactivate"
+        cancelText="Cancel"
+        confirmButtonClass="btn-danger"
+        onConfirm={confirmDeactivate}
+        onCancel={() => {
+          setShowDeactivateModal(false);
+          setSelectedMechanic(null);
+        }}
+      />
     </div>
   );
 };

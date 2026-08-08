@@ -6,6 +6,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import { formatDate } from "../../utils/formatters";
 import { useRef } from "react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../components/common/ConfirmModal";
 
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -14,6 +15,8 @@ const MyAppointments = () => {
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [search, setSearch] = useState("");
   const debounceTimeout = useRef(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
     if (debounceTimeout.current) {
@@ -50,17 +53,21 @@ const MyAppointments = () => {
   if (loading && appointments.length === 0)
     return <LoadingSpinner text="Fetching your appointments..." />;
 
-  const handleCancelAppointment = async (appointmentId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this appointment?",
-    );
+  const handleCancelAppointment = (appointmentId) => {
+    setSelectedAppointment(appointmentId);
+    setShowCancelModal(true);
+  };
 
-    if (!confirmed) return;
+  const confirmCancelAppointment = async () => {
+    if (!selectedAppointment) return;
 
     try {
-      await appointmentService.cancelAppointment(appointmentId);
+      await appointmentService.cancelAppointment(selectedAppointment);
 
       toast.success("Appointment cancelled successfully.");
+
+      setShowCancelModal(false);
+      setSelectedAppointment(null);
 
       fetchAppointments(search);
     } catch (err) {
@@ -294,6 +301,20 @@ const MyAppointments = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        show={showCancelModal}
+        title="Cancel Appointment"
+        message="Are you sure you want to cancel this appointment?"
+        confirmText="Yes, Cancel"
+        cancelText="Keep Appointment"
+        confirmButtonClass="btn-danger"
+        onConfirm={confirmCancelAppointment}
+        onCancel={() => {
+          setShowCancelModal(false);
+          setSelectedAppointment(null);
+        }}
+      />
     </div>
   );
 };
