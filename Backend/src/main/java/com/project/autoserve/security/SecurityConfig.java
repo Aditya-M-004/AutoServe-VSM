@@ -212,6 +212,13 @@ public class SecurityConfig {
                                 HttpMethod.PUT,
                                 "/api/admin/profile")
                         .hasRole("ADMIN")
+                        
+                        //MICROSERVICE API
+                        
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/vehicle-tips/**")
+                        .hasAnyRole("ADMIN", "MECHANIC", "CUSTOMER")
 
                         // ===========================
                         // Any other request
