@@ -142,17 +142,58 @@ const JobCardView = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {jobCard.mechanicRemarks && (
-          <div className="mt-4 pt-3 border-top">
-            <h6 className="fw-bold text-muted small text-uppercase">
-              Technician Remarks / Observations
-            </h6>
-            <p className="m-0 bg-light p-3 rounded-3 text-dark border">
-              {jobCard.mechanicRemarks}
-            </p>
+      {/* Service Details */}
+      <div className="card glass-card border-0 p-4 mb-4 shadow-sm">
+        <h5 className="fw-bold text-dark mb-4">
+          <i className="bi bi-clipboard-check me-2 text-primary"></i>
+          Service Details
+        </h5>
+
+        <div className="row g-4">
+          {/* Inspection Notes */}
+          <div className="col-md-12">
+            <div className="border rounded-3 p-3 h-100">
+              <h6 className="fw-bold text-muted small text-uppercase mb-2">
+                <i className="bi bi-search me-2 text-primary"></i>
+                Inspection Notes
+              </h6>
+
+              <p className="mb-0 text-dark">
+                {jobCard.inspectionNotes || "No inspection notes added."}
+              </p>
+            </div>
           </div>
-        )}
+
+          {/* Work Done */}
+          <div className="col-md-12">
+            <div className="border rounded-3 p-3 h-100">
+              <h6 className="fw-bold text-muted small text-uppercase mb-2">
+                <i className="bi bi-wrench-adjustable me-2 text-primary"></i>
+                Work Done
+              </h6>
+
+              <p className="mb-0 text-dark">
+                {jobCard.workDone || "No work details added."}
+              </p>
+            </div>
+          </div>
+
+          {/* Mechanic Remarks */}
+          <div className="col-md-12">
+            <div className="border rounded-3 p-3 h-100">
+              <h6 className="fw-bold text-muted small text-uppercase mb-2">
+                <i className="bi bi-chat-left-text me-2 text-primary"></i>
+                Mechanic Remarks
+              </h6>
+
+              <p className="mb-0 text-dark">
+                {jobCard.mechanicRemarks || "No mechanic remarks added."}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Replaced Parts & Labor Charges Breakdown */}
@@ -196,9 +237,7 @@ const JobCardView = () => {
                       )}
                     </td>
                     <td className="text-center">{p.quantity || 1}</td>
-                    <td className="text-end">
-                      {formatCurrency(p.unitPrice)}
-                    </td>
+                    <td className="text-end">{formatCurrency(p.unitPrice)}</td>
                     <td className="text-end fw-semibold">
                       {formatCurrency(p.subtotal)}
                     </td>

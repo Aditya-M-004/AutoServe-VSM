@@ -19,6 +19,7 @@ import com.project.autoserve.service.pdf.InvoicePdfService;
 import com.project.autoserve.util.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/invoices")
@@ -87,6 +88,17 @@ public class InvoiceController {
     @GetMapping("/{invoiceId}/pdf")
     public ResponseEntity<ByteArrayResource> downloadInvoicePdf(
             @PathVariable Long invoiceId) {
+
+        InvoiceResponseDTO invoice =
+                invoiceService.getInvoiceById(invoiceId);
+
+        if (!"PAID".equalsIgnoreCase(
+                String.valueOf(invoice.getStatus()))) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Invoice PDF can only be downloaded after payment.");
+        }
 
         ByteArrayResource pdf =
                 invoicePdfService.generateInvoicePdf(invoiceId);

@@ -120,7 +120,29 @@ public class JobCardServiceImpl implements JobCardService {
     @Override
     public List<JobCardResponseDTO> getAllJobCards() {
 
-        return jobCardRepository.findAll()
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found."));
+
+        // Admin -> See all Job Cards
+        if (user.getRole().name().equals("ADMIN")) {
+
+            return jobCardRepository.findAll()
+                    .stream()
+                    .map(MapperUtil::toJobCardResponse)
+                    .toList();
+        }
+
+        // Mechanic -> See only assigned Job Cards
+        Mechanic mechanic = mechanicRepository.findByUser(user)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Mechanic not found."));
+
+        return jobCardRepository
+                .findByAppointmentMechanic(mechanic)
                 .stream()
                 .map(MapperUtil::toJobCardResponse)
                 .toList();

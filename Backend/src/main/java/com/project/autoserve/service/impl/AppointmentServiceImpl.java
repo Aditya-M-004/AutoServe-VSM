@@ -77,17 +77,34 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentResponseDTO> getMyAppointments(String userEmail) {
+    public List<AppointmentResponseDTO> getMyAppointments(
+            String userEmail,
+            String search) {
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found."));
 
-        List<Vehicle> vehicles = vehicleRepository.findByUser(user);
+        List<Appointment> appointments;
 
-        return vehicles.stream()
-                .flatMap(vehicle ->
-                        appointmentRepository.findByVehicle(vehicle).stream())
+        if (search == null || search.isBlank()) {
+
+            List<Vehicle> vehicles = vehicleRepository.findByUser(user);
+
+            appointments = vehicles.stream()
+                    .flatMap(vehicle ->
+                            appointmentRepository.findByVehicle(vehicle).stream())
+                    .toList();
+
+        } else {
+
+            appointments = appointmentRepository.searchMyAppointments(
+                    user,
+                    search);
+
+        }
+
+        return appointments.stream()
                 .map(appointment -> {
 
                     AppointmentResponseDTO dto =
@@ -98,8 +115,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                                     dto.setJobId(jobCard.getJobId()));
 
                     return dto;
+
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -186,6 +204,42 @@ public class AppointmentServiceImpl implements AppointmentService {
      Appointment updatedAppointment = appointmentRepository.save(appointment);
 
      return MapperUtil.toAppointmentResponse(updatedAppointment);
+    }
+    
+    @Override
+    public AppointmentResponseDTO cancelAppointment(
+            Long appointmentId,
+            String userEmail) {
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Appointment not found."));
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found."));
+
+        if (!appointment.getVehicle()
+                .getUser()
+                .getUserId()
+                .equals(user.getUserId())) {
+
+            throw new BadRequestException(
+                    "You are not authorized to cancel this appointment.");
+        }
+
+        if (appointment.getStatus() != AppointmentStatus.PENDING) {
+
+            throw new BadRequestException(
+                    "Only pending appointments can be cancelled.");
+        }
+
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+
+        Appointment updatedAppointment =
+                appointmentRepository.save(appointment);
+
+        return MapperUtil.toAppointmentResponse(updatedAppointment);
     }
 
 }

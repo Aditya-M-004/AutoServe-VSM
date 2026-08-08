@@ -78,6 +78,25 @@ const Navbar = ({ onToggleSidebar }) => {
               <div className="fw-bold text-dark">{user?.name}</div>
               <small className="text-muted">{user?.email}</small>
             </li>
+
+            <li>
+              <button
+                className="dropdown-menu-item btn w-100 text-start px-3 py-2 border-0 bg-transparent rounded"
+                onClick={() => {
+                  if (role === "CUSTOMER") {
+                    navigate("/customer/profile");
+                  } else if (role === "MECHANIC") {
+                    navigate("/mechanic/profile");
+                  } else if (role === "ADMIN") {
+                    navigate("/admin/profile");
+                  }
+                }}
+              >
+                <i className="bi bi-person-circle me-2 text-primary"></i>
+                My Profile
+              </button>
+            </li>
+
             <li>
               <button
                 className="dropdown-menu-item btn w-100 text-start px-3 py-2 border-0 bg-transparent rounded"

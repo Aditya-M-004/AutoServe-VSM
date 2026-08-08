@@ -26,7 +26,8 @@ public interface AppointmentService {
      * @return List of appointments.
      */
     List<AppointmentResponseDTO> getMyAppointments(
-            String userEmail);
+            String userEmail,
+            String search);
 
     /**
      * Get appointment by ID.
@@ -47,6 +48,11 @@ public interface AppointmentService {
     AppointmentResponseDTO updateAppointmentStatus(
             Long appointmentId,
             AppointmentStatus status
+    );
+    
+    AppointmentResponseDTO cancelAppointment(
+            Long appointmentId,
+            String userEmail
     );
 
 }

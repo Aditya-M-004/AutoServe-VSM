@@ -4,25 +4,41 @@ import { appointmentService } from "../../services/appointmentService";
 import StatusBadge from "../../components/StatusBadge";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { formatDate } from "../../utils/formatters";
+import { useRef } from "react";
+import { toast } from "react-toastify";
 
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [search, setSearch] = useState("");
+  const debounceTimeout = useRef(null);
 
   useEffect(() => {
-    fetchAppointments();
-  }, []);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
 
-  const fetchAppointments = async () => {
-    setLoading(true);
+    debounceTimeout.current = setTimeout(() => {
+      fetchAppointments(search);
+    }, 300);
+
+    return () => clearTimeout(debounceTimeout.current);
+  }, [search]);
+
+  const fetchAppointments = async (searchText = "") => {
+    setSearchLoading(true);
+
     try {
-      const res = await appointmentService.getAppointments();
+      const res = await appointmentService.getAppointments(searchText);
+
       const data = res.data || res || [];
       setAppointments(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to load appointments", error);
     } finally {
+      setSearchLoading(false);
       setLoading(false);
     }
   };
@@ -31,8 +47,30 @@ const MyAppointments = () => {
     if (filterStatus === "ALL") return true;
     return app.status === filterStatus;
   });
+  if (loading && appointments.length === 0)
+    return <LoadingSpinner text="Fetching your appointments..." />;
 
-  if (loading) return <LoadingSpinner text="Fetching your appointments..." />;
+  const handleCancelAppointment = async (appointmentId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this appointment?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await appointmentService.cancelAppointment(appointmentId);
+
+      toast.success("Appointment cancelled successfully.");
+
+      fetchAppointments(search);
+    } catch (err) {
+      console.error(err);
+
+      toast.error(
+        err.response?.data?.message || "Failed to cancel appointment.",
+      );
+    }
+  };
 
   return (
     <div>
@@ -82,14 +120,68 @@ const MyAppointments = () => {
         </div>
       </div>
 
+      <div className="card glass-card border-0 p-3 mb-4">
+        <div className="input-group">
+          <span className="input-group-text bg-white border-end-0">
+            {searchLoading ? (
+              <div
+                className="spinner-border spinner-border-sm text-primary"
+                role="status"
+              />
+            ) : (
+              <i className="bi bi-search"></i>
+            )}
+          </span>
+
+          <input
+            type="text"
+            className="form-control border-start-0"
+            placeholder="Search by vehicle, mechanic, status, registration number or service note..."
+            value={search}
+            spellCheck={false}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
       {/* Appointments Table / Cards */}
       {filteredAppointments.length === 0 ? (
         <div className="card glass-card border-0 p-5 text-center">
           <i className="bi bi-calendar-x fs-1 text-muted mb-2"></i>
-          <h5 className="fw-bold text-dark">No Appointments Found</h5>
+
+          <h5 className="fw-bold text-dark">
+            {search.trim()
+              ? "🔍 No Matching Appointments Found"
+              : filterStatus === "ALL"
+                ? "No Appointments Found"
+                : `No ${filterStatus.replace("_", " ")} Appointments`}
+          </h5>
+
           <p className="text-muted">
-            No appointments match the selected filter condition.
+            {search.trim() ? (
+              <>
+                No appointments matched <strong>"{search}"</strong>. Try
+                searching by vehicle, mechanic, registration number, service
+                note or status.
+              </>
+            ) : filterStatus === "ALL" ? (
+              "You don't have any appointments yet."
+            ) : (
+              `You currently don't have any ${filterStatus
+                .replace("_", " ")
+                .toLowerCase()} appointments.`
+            )}
           </p>
+
+          {search && (
+            <button
+              className="btn btn-outline-primary"
+              onClick={() => setSearch("")}
+            >
+              <i className="bi bi-x-circle me-2"></i>
+              Clear Search
+            </button>
+          )}
         </div>
       ) : (
         <div className="card glass-card border-0 p-4 shadow-sm">
@@ -135,10 +227,10 @@ const MyAppointments = () => {
                         </span>
                       </td>
                       <td>
-                        {app.mechanic ? (
+                        {app.mechanicName ? (
                           <div className="d-flex align-items-center gap-1">
                             <i className="bi bi-person-badge text-primary"></i>
-                            <span>{app.mechanic.name || app.mechanicName}</span>
+                            <span>{app.mechanicName}</span>
                           </div>
                         ) : (
                           <span className="text-muted fst-italic">
@@ -149,7 +241,20 @@ const MyAppointments = () => {
                       <td>
                         <StatusBadge status={app.status} />
                       </td>
+
                       <td className="text-end">
+                        {app.status === "PENDING" && (
+                          <button
+                            className="btn btn-outline-danger btn-sm me-2"
+                            onClick={() =>
+                              handleCancelAppointment(app.appointmentId)
+                            }
+                          >
+                            <i className="bi bi-x-circle me-1"></i>
+                            Cancel
+                          </button>
+                        )}
+
                         {app.jobId && (
                           <Link
                             to={`/customer/jobcard/${app.jobId}`}
@@ -170,8 +275,15 @@ const MyAppointments = () => {
                           </Link>
                         )}
 
-                        {!app.jobId && (
+                        {app.status === "ACCEPTED" ||
+                        app.status === "IN_PROGRESS" ? (
                           <span className="text-muted small">Processing</span>
+                        ) : null}
+
+                        {app.status === "CANCELLED" && (
+                          <span className="badge bg-danger-subtle text-danger">
+                            Cancelled
+                          </span>
                         )}
                       </td>
                     </tr>

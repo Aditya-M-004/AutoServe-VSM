@@ -21,11 +21,13 @@ import MyAppointments from "./pages/customer/MyAppointments";
 import JobCardView from "./pages/customer/JobCardView";
 import PaymentPage from "./pages/customer/PaymentPage";
 import InvoiceDetails from "./pages/customer/InvoiceDetails";
+import Profile from "./pages/customer/Profile";
 
 // Mechanic Pages
 import MechanicDashboard from "./pages/mechanic/MechanicDashboard";
 import MechanicJobCards from "./pages/mechanic/MechanicJobCards";
 import JobCardDetails from "./pages/mechanic/JobCardDetails";
+import MechanicProfile from "./pages/mechanic/MechanicProfile";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -33,6 +35,7 @@ import ManageAppointments from "./pages/admin/ManageAppointments";
 import ManageMechanics from "./pages/admin/ManageMechanics";
 import ManageVehicles from "./pages/admin/ManageVehicles";
 import ManagePayments from "./pages/admin/ManagePayments";
+import AdminProfile from "./pages/admin/AdminProfile";
 
 // Root Redirect Helper
 const RootRedirect = () => {
@@ -96,6 +99,8 @@ function App() {
                 element={<InvoiceDetails />}
               />
               <Route path="/customer/payments" element={<PaymentPage />} />
+
+              <Route path="/customer/profile" element={<Profile />} />
             </Route>
 
             {/* Mechanic Routes */}
@@ -135,6 +140,15 @@ function App() {
                   </FirstLoginRoute>
                 }
               />
+
+              <Route
+                path="/mechanic/profile"
+                element={
+                  <FirstLoginRoute>
+                    <MechanicProfile />
+                  </FirstLoginRoute>
+                }
+              />
             </Route>
 
             {/* Admin Routes */}
@@ -147,6 +161,7 @@ function App() {
               <Route path="/admin/mechanics" element={<ManageMechanics />} />
               <Route path="/admin/vehicles" element={<ManageVehicles />} />
               <Route path="/admin/payments" element={<ManagePayments />} />
+              <Route path="/admin/profile" element={<AdminProfile />} />
             </Route>
           </Route>
 

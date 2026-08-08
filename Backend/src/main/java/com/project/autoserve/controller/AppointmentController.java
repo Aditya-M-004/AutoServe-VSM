@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.autoserve.dto.appointment.AppointmentRequestDTO;
@@ -55,11 +56,13 @@ public class AppointmentController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<AppointmentResponseDTO>>> getMyAppointments(
-            Principal principal) {
+            Principal principal,
+            @RequestParam(required = false) String search) {
 
         List<AppointmentResponseDTO> appointments =
                 appointmentService.getMyAppointments(
-                        principal.getName());
+                        principal.getName(),
+                        search);
 
         return ResponseEntity.ok(
                 ApiResponse.<List<AppointmentResponseDTO>>builder()
@@ -130,6 +133,24 @@ public class AppointmentController {
                 ApiResponse.<AppointmentResponseDTO>builder()
                         .success(true)
                         .message("Appointment status updated successfully.")
+                        .data(appointment)
+                        .build());
+    }
+    
+    @PutMapping("/{appointmentId}/cancel")
+    public ResponseEntity<ApiResponse<AppointmentResponseDTO>> cancelAppointment(
+            @PathVariable Long appointmentId,
+            Principal principal) {
+
+        AppointmentResponseDTO appointment =
+                appointmentService.cancelAppointment(
+                        appointmentId,
+                        principal.getName());
+
+        return ResponseEntity.ok(
+                ApiResponse.<AppointmentResponseDTO>builder()
+                        .success(true)
+                        .message("Appointment cancelled successfully.")
                         .data(appointment)
                         .build());
     }

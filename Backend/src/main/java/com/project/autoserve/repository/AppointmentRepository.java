@@ -11,6 +11,8 @@ import com.project.autoserve.entity.Mechanic;
 import com.project.autoserve.entity.User;
 import com.project.autoserve.entity.Vehicle;
 import com.project.autoserve.enums.AppointmentStatus;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
@@ -42,6 +44,31 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     
     List<Appointment> findTop5ByMechanicOrderByAppointmentDateDesc(
             Mechanic mechanic
+    );
+    
+    @Query("""
+            SELECT a
+            FROM Appointment a
+            WHERE a.vehicle.user = :user
+            AND (
+                LOWER(a.vehicle.brand) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR LOWER(a.vehicle.model) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR LOWER(a.vehicle.vehicleNumber) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR LOWER(a.problemDescription) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR LOWER(CAST(a.status AS string)) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR (
+                    a.mechanic IS NOT NULL
+                    AND LOWER(a.mechanic.user.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                )
+            )
+            """)
+    List<Appointment> searchMyAppointments(
+            @Param("user") User user,
+            @Param("keyword") String keyword);
+    
+    long countByMechanicAndStatus(
+            Mechanic mechanic,
+            AppointmentStatus status
     );
 
 }

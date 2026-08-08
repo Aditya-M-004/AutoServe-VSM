@@ -38,7 +38,6 @@ const InvoiceDetails = () => {
       );
 
       const blob = response.data;
-      
 
       const url = window.URL.createObjectURL(blob);
 
@@ -60,7 +59,7 @@ const InvoiceDetails = () => {
     } catch (err) {
       console.log(err);
       console.error(err);
-console.log("Response:", response);
+      console.log("Response:", response);
       console.log("Status:", response.status);
       console.log("Headers:", response.headers);
       console.log("Blob:", response.data);
@@ -190,6 +189,14 @@ console.log("Response:", response);
               <button
                 className="btn btn-outline-primary"
                 onClick={handleDownload}
+                disabled={
+                  invoice.status !== "PAID" && invoice.paymentStatus !== "PAID"
+                }
+                title={
+                  invoice.status !== "PAID" && invoice.paymentStatus !== "PAID"
+                    ? "Please complete payment before downloading the invoice."
+                    : "Download Invoice PDF"
+                }
               >
                 <i className="bi bi-download me-2"></i>
                 Download PDF

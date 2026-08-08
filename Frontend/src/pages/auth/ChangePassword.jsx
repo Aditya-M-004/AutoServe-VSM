@@ -4,17 +4,10 @@ import { toast } from "react-toastify";
 import authService from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 import { ROLES } from "../../utils/constants";
-import { useEffect } from "react";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-
-  useEffect(() => {
-    if (user && user.role === ROLES.MECHANIC && !user.firstLogin) {
-      navigate("/mechanic/dashboard");
-    }
-  }, [user, navigate]);
 
   const [loading, setLoading] = useState(false);
 
@@ -238,12 +231,13 @@ const ChangePassword = () => {
         </form>
 
         <div className="text-center mt-4">
-          <Link
-            to="/login"
-            className="fw-bold text-primary text-decoration-none"
+          <button
+            type="button"
+            className="btn btn-link fw-bold text-decoration-none"
+            onClick={() => navigate(-1)}
           >
             ← Back
-          </Link>
+          </button>
         </div>
       </div>
     </div>

@@ -192,6 +192,26 @@ public class SecurityConfig {
                                 HttpMethod.PUT,
                                 "/api/customer/profile")
                         .hasRole("CUSTOMER")
+                        
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/mechanic/profile")
+                        .hasRole("MECHANIC")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/mechanic/profile")
+                        .hasRole("MECHANIC")
+                        
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/admin/profile")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/admin/profile")
+                        .hasRole("ADMIN")
 
                         // ===========================
                         // Any other request

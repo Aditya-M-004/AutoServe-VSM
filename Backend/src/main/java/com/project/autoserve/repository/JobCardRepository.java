@@ -31,4 +31,6 @@ public interface JobCardRepository extends JpaRepository<JobCard, Long> {
             Mechanic mechanic,
             JobStatus status
     );
+    
+    List<JobCard> findByAppointmentMechanic(Mechanic mechanic);
 }
